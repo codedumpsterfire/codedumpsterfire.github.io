@@ -60,14 +60,14 @@ jobs:
         with:
           node-version: '18.17.0'
 
-      - uses: actions/ng-easy/npm-install@v2
+      - uses: ng-easy/npm-install@v2
       - run: |
           echo "installing packages..."
           npm install
           echo "building project..."
           npm run build
 
-      - uses: actions/AhsanAyaz/angular-deploy-gh-pages-actions@v1.4.0
+      - uses: AhsanAyaz/angular-deploy-gh-pages-actions@v1.4.0
         with:
             build_configuration: production 
             base_href: /codedumpsterfire.github.io/   # make sure this corresponds to https://<your_username>.github.io/<base_href>/
