@@ -60,6 +60,7 @@ jobs:
           echo "installing packages..."
           npm install
           npm i -g @angular/cli 
+          ng add angular-cli-ghpages
           echo "Building project..."
           npm run build
           echo "Deploying project..."
