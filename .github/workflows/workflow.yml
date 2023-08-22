@@ -1,36 +1,81 @@
-# This is a basic workflow to help you get started with Actions
+# GitHub Actions is a continuous integration and continuous delivery (CI/CD) platform that allows you to automate your build, test, and deployment pipeline. 
+# GitHub provides Linux, Windows, and macOS virtual machines to run your workflows, or you can host your own self-hosted runners in your own data center or cloud infrastructure.
+# The components of GitHub Actions
+#   - You can configure a GitHub Actions workflow to be triggered when an event occurs in your repository
+#   - Each workflow has a JOB
+#     - These run in sequence or in parallel. 
+#     - Each job runs in its own VM. 
+#     - The job has STEPS to run an action or script. 
+# Flow: Event -> Runner -> Job -> step1... 
+# A workflow is a configurable automated process that will run one or more jobs. Workflows are defined by a YAML file checked in to your repository
+# Dont forget to follow KISS ( keep it simple stupid )
+################################################################################################
 
-name: CI workflow for angular frontend
+# Just whatever your workflow name will be ! 
+name: build&deploy-frontend-main
+run-name: ${{ github.actor }} deployed to main branch
 
-# Controls when the workflow will run
+# Controls when the workflow will run via EVENTS 
+# https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
+
+# Define events:
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
+  # PUSH event that runs your workflow when you push a commit or tag, or when you clone a repository.
   push:
-    branches: [ "main" ]
-  pull_request:
+    # Running your workflow only when a push to specific branches occurs
     branches: [ "main" ]
 
   # Allows you to run this workflow manually from the Actions tab
+  # You can manually trigger a workflow run using the GitHub API, GitHub CLI, or GitHub
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+############################################################################################################
+
 jobs:
-  # This workflow contains a single job called "build"
+  # A job is a set of steps in a workflow that is executed on the same runner. 
+  # Each step is either a shell script that will be executed, or an action that will be run.
+  # Since each step is executed on the same runner, you can share data from one step to another.
+  # https://docs.github.com/en/actions/using-jobs/using-jobs-in-a-workflow
   build:
-    # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    # The type of runner ( VM ) that the job will run on
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest,macos-latest ]
+    runs-on: ${{ matrix.os }}
+
+    # An action is a custom application for the GitHub Actions platform that performs a complex but frequently repeated task. Use an action to help reduce the amount of repetitive code that you write in your workflow files.
+    # https://github.com/marketplace?type=actions
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      # You should use the checkout action any time your workflow will use the repository's code.
+      # https://github.com/marketplace/actions/checkout
 
-      # Runs a single command using the runners shell
-      - name: Run a one-line script
-        run: echo Hello, world!
+      - name: Grab code from codebase
+        uses: actions/checkout@v3
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Setup node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.17.0'
+
+      - name: Use github actions 
+        uses: actions/angular-github-actions
+
+      # Run
+      - name: Build project for deployment 
+        uses: ng-easy/npm-install@v2
         run: |
-          echo Add other actions to build,
-          echo test, and deploy your project.
+          echo "installing packages..."
+          npm install
+          echo "building project..."
+          npm run build
+
+      - name: Deploy to GH Pages
+        uses: AhsanAyaz/angular-deploy-gh-pages-actions@v1.4.0
+        with:
+          build_configuration: production 
+          base_href: /codedumpsterfire.github.io/   # make sure this corresponds to https://<your_username>.github.io/<base_href>/
+          deploy_branch: master
+          angular_dist_build_folder: docs/ # The folder where your project is supposed to be after running ng build by the action.
