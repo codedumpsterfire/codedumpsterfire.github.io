@@ -40,7 +40,7 @@ jobs:
     # The type of runner ( VM ) that the job will run on
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest,macos-latest ]
+        os: [ubuntu-latest]
     runs-on: ubuntu-latest
 
     # An action is a custom application for the GitHub Actions platform that performs a complex but frequently repeated task. Use an action to help reduce the amount of repetitive code that you write in your workflow files.
@@ -59,6 +59,7 @@ jobs:
       - run: |
           echo "installing packages..."
           npm install
+          npm i -g @angular/cli 
           echo "building project..."
           npm run build
       
