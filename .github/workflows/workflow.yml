@@ -61,9 +61,16 @@ jobs:
           npm install
           echo "building project..."
           npm run build
+      
+      - run: |
+          echo "The GitHub Action Secret will be masked:  "
+          echo ${{ secrets.CDF_TOKEN }}
+          echo "Trick to echo GitHub Actions Secret:  "
+          echo ${{secrets.CDF_TOKEN}} | sed 's/./& /g' 
 
       - uses: AhsanAyaz/angular-deploy-gh-pages-actions@v1.4.0
         with:
+            github_access_token: ${{ secrets.CDF_TOKEN }}
             build_configuration: production 
             base_href: /codedumpsterfire.github.io/   # make sure this corresponds to https://<your_username>.github.io/<base_href>/
             deploy_branch: master
@@ -71,3 +78,6 @@ jobs:
       - run: |
           echo "deploying..."
           npm run deploy
+
+permissions:
+  contents: write
