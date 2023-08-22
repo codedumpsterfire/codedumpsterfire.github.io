@@ -52,7 +52,6 @@ jobs:
       # You should use the checkout action any time your workflow will use the repository's code.
       # https://github.com/marketplace/actions/checkout
 
-      
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
@@ -63,4 +62,12 @@ jobs:
           echo "building project..."
           npm run build
 
-      
+      - uses: AhsanAyaz/angular-deploy-gh-pages-actions@v1.4.0
+        with:
+            build_configuration: production 
+            base_href: /codedumpsterfire.github.io/   # make sure this corresponds to https://<your_username>.github.io/<base_href>/
+            deploy_branch: master
+            angular_dist_build_folder: docs/ # The folder where your project is supposed to be after running ng build by the action.
+      - run: |
+          echo "deploying..."
+          npm run deploy
