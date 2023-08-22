@@ -13,7 +13,6 @@
 
 # Just whatever your workflow name will be ! 
 name: build&deploy-frontend-main
-run-name: ${{ github.actor }} deployed to main branch
 
 # Controls when the workflow will run via EVENTS 
 # https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
@@ -37,11 +36,7 @@ jobs:
   # Since each step is executed on the same runner, you can share data from one step to another.
   # https://docs.github.com/en/actions/using-jobs/using-jobs-in-a-workflow
   build:
-    # The type of runner ( VM ) that the job will run on
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest,macos-latest ]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     # An action is a custom application for the GitHub Actions platform that performs a complex but frequently repeated task. Use an action to help reduce the amount of repetitive code that you write in your workflow files.
     # https://github.com/marketplace?type=actions
@@ -70,3 +65,13 @@ jobs:
           npm install
           echo "building project..."
           npm run build
+
+      - uses: actions/AhsanAyaz/angular-deploy-gh-pages-actions@v1.4.0
+        with:
+            build_configuration: production 
+            base_href: /codedumpsterfire.github.io/   # make sure this corresponds to https://<your_username>.github.io/<base_href>/
+            deploy_branch: master
+            angular_dist_build_folder: docs/ # The folder where your project is supposed to be after running ng build by the action.
+      - run: |
+          echo "deploying..."
+          npm run deploy
