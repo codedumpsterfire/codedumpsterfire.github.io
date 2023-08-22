@@ -66,11 +66,11 @@ jobs:
       - uses: AhsanAyaz/angular-deploy-gh-pages-actions@v1.4.0
         with:
             github_access_token: ${{ secrets.CDF_TOKEN }}
-            build_configuration: production 
+            build_configuration: development 
             base_href: /codedumpsterfire.github.io/   # make sure this corresponds to https://<your_username>.github.io/<base_href>/
             deploy_branch: master
             angular_dist_build_folder: docs/ # The folder where your project is supposed to be after running ng build by the action.
-            angular_project_dir: ./src
+            angular_project_dir: ./
       - run: |
           echo "deploying..."
           npm run deploy
