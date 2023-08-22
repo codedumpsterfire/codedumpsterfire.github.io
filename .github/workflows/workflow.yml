@@ -63,10 +63,9 @@ jobs:
       - name: Use github actions 
         uses: actions/angular-github-actions
 
-      # Run
       - name: Build project for deployment 
         uses: ng-easy/npm-install@v2
-        run: |
+      - run: |
           echo "installing packages..."
           npm install
           echo "building project..."
@@ -75,7 +74,7 @@ jobs:
       - name: Deploy to GH Pages
         uses: AhsanAyaz/angular-deploy-gh-pages-actions@v1.4.0
         with:
-          build_configuration: production 
-          base_href: /codedumpsterfire.github.io/   # make sure this corresponds to https://<your_username>.github.io/<base_href>/
-          deploy_branch: master
-          angular_dist_build_folder: docs/ # The folder where your project is supposed to be after running ng build by the action.
+            build_configuration: production 
+            base_href: /codedumpsterfire.github.io/   # make sure this corresponds to https://<your_username>.github.io/<base_href>/
+            deploy_branch: master
+            angular_dist_build_folder: docs/ # The folder where your project is supposed to be after running ng build by the action.
