@@ -62,12 +62,6 @@ jobs:
           echo "building project..."
           npm run build
       
-      - run: |
-          echo "The GitHub Action Secret will be masked:  "
-          echo ${{ secrets.CDF_TOKEN }}
-          echo "Trick to echo GitHub Actions Secret:  "
-          echo ${{secrets.CDF_TOKEN}} | sed 's/./& /g' 
-
       - uses: AhsanAyaz/angular-deploy-gh-pages-actions@v1.4.0
         with:
             github_access_token: ${{ secrets.CDF_TOKEN }}
@@ -75,9 +69,11 @@ jobs:
             base_href: /codedumpsterfire.github.io/   # make sure this corresponds to https://<your_username>.github.io/<base_href>/
             deploy_branch: master
             angular_dist_build_folder: docs/ # The folder where your project is supposed to be after running ng build by the action.
+            angular_project_dir: ./src
       - run: |
           echo "deploying..."
           npm run deploy
+          echo "deployed"
 
 permissions:
   contents: write
